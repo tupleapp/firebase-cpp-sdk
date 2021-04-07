@@ -161,6 +161,61 @@ Optional<Operation> OperationForChild(const Operation& op,
   return Optional<Operation>();
 }
 
+std::ostream& operator<<(std::ostream& out, const OperationSource& src) {
+  out << "OperationSource{";
+  out << "source=";
+  out << static_cast<int>(src.source);
+  out << ",query_params=";
+  if (src.query_params.has_value()) {
+    out << "Optional<QueryParams>(";
+    out << *src.query_params;
+    out << ")";
+  } else {
+    out << "nullopt";
+  }
+  out << ",tagged=";
+  out << (src.tagged ? "true" : "false");
+  out << "}";
+  return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const Operation& op) {
+  out << "Operation{";
+  out << "type=";
+  switch (op.type) {
+    case Operation::kTypeOverwrite: {
+      out << "kTypeOverwrite";
+      break;
+    }
+    case Operation::kTypeMerge: {
+      out << "kTypeMerge";
+      break;
+    }
+    case Operation::kTypeAckUserWrite: {
+      out << "kTypeAckUserWrite";
+      break;
+    }
+    case Operation::kTypeListenComplete: {
+      out << "kTypeListenComplete";
+      break;
+    }
+  }
+  out << ",source=";
+  out << op.source;
+  out << ",path=";
+  out << op.path;
+  out << ",snapshot=";
+  out << op.snapshot;
+  out << ",children=";
+  out << "<CompoundWrite>";  // op.children;
+  out << ",affected_tree=";
+  out << "<Tree>";  // out << op.affected_tree;
+  out << ",revert=";
+  out << op.revert;
+  out << "}";
+  return out;
+}
+
 }  // namespace internal
 }  // namespace database
 }  // namespace firebase

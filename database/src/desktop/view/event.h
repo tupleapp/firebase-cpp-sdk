@@ -15,6 +15,7 @@
 #ifndef FIREBASE_DATABASE_CLIENT_CPP_SRC_DESKTOP_VIEW_EVENT_H_
 #define FIREBASE_DATABASE_CLIENT_CPP_SRC_DESKTOP_VIEW_EVENT_H_
 
+#include <iostream>
 #include <string>
 
 #include "app/memory/unique_ptr.h"
@@ -22,6 +23,7 @@
 #include "app/src/path.h"
 #include "database/src/desktop/core/event_registration.h"
 #include "database/src/desktop/data_snapshot_desktop.h"
+#include "database/src/desktop/util_desktop.h"
 #include "database/src/desktop/view/event_type.h"
 #include "firebase/database/common.h"
 
@@ -110,6 +112,60 @@ inline bool operator==(const Event& lhs, const Event& rhs) {
 }
 inline bool operator!=(const Event& lhs, const Event& rhs) {
   return !(lhs == rhs);
+}
+
+inline std::ostream& operator<<(std::ostream& out, const Event& event) {
+  out << "Event{";
+  switch (event.type) {
+    case kEventTypeChildRemoved: {
+      out << "kEventTypeChildRemoved";
+      break;
+    }
+    case kEventTypeChildAdded: {
+      out << "kEventTypeChildAdded";
+      break;
+    }
+    case kEventTypeChildMoved: {
+      out << "kEventTypeChildMoved";
+      break;
+    }
+    case kEventTypeChildChanged: {
+      out << "kEventTypeChildChanged";
+      break;
+    }
+    case kEventTypeValue: {
+      out << "kEventTypeValue";
+      break;
+    }
+    case kEventTypeError: {
+      out << "kEventTypeError";
+      break;
+    }
+  }
+  out << ",event_registration=";
+  out << static_cast<void*>(event.event_registration);
+
+  out << ",snapshot=";
+  if (event.snapshot.has_value()) {
+    out << "DataSnapshotInternal{";
+    out << "value=";
+    out << event.snapshot->GetValue();
+    out << ",priority=";
+    out << event.snapshot->GetPriority();
+    // out << ",query_spec_=";
+    // out << event.snapshot->query_spec_;
+    out << "}";
+  } else {
+    out << "nullopt";
+  }
+  out << event.prev_name;
+  out << ",prev_name=";
+  out << event.prev_name;
+  out << ",error=";
+  out << static_cast<int>(event.error);
+  out << ",path=";
+  out << event.path;
+  return out;
 }
 
 }  // namespace internal

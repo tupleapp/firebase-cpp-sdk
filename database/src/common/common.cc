@@ -15,6 +15,7 @@
 #include "database/src/include/firebase/database/common.h"
 
 #include "app/src/include/firebase/internal/common.h"
+#include "database/src/common/query_spec.h"
 
 namespace firebase {
 namespace database {
@@ -69,5 +70,84 @@ const Variant& ServerTimestamp() {
   return *g_server_value_timestamp;
 }
 
+namespace internal {
+
+std::ostream& operator<<(std::ostream& out, const QuerySpec& query_spec) {
+  out << "QuerySpec{";
+  out << "path=";
+  out << query_spec.path;
+  out << ",params=";
+  out << query_spec.params;
+  out << "}";
+  return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const QueryParams& query_params) {
+  out << "QueryParams{";
+  bool needsComma = false;
+  if (query_params.order_by) {
+    out << "order_by=";
+    out << static_cast<int>(query_params.order_by);
+    needsComma = true;
+  }
+  if (!query_params.order_by_child.empty()) {
+    if (needsComma) out << ",";
+    out << "order_by_child=";
+    out << query_params.order_by_child;
+    needsComma = true;
+  }
+  if (query_params.start_at_value.has_value()) {
+    if (needsComma) out << ",";
+    out << "start_at_value=";
+    out << *query_params.start_at_value;
+    needsComma = true;
+  }
+  if (query_params.start_at_child_key.has_value()) {
+    if (needsComma) out << ",";
+    out << "start_at_child_key=";
+    out << *query_params.start_at_child_key;
+    needsComma = true;
+  }
+  if (query_params.end_at_value.has_value()) {
+    if (needsComma) out << ",";
+    out << "end_at_value=";
+    out << *query_params.end_at_value;
+    needsComma = true;
+  }
+  if (query_params.end_at_child_key.has_value()) {
+    if (needsComma) out << ",";
+    out << "end_at_child_key=";
+    out << *query_params.end_at_child_key;
+    needsComma = true;
+  }
+  if (query_params.equal_to_value.has_value()) {
+    if (needsComma) out << ",";
+    out << "equal_to_value=";
+    out << *query_params.equal_to_value;
+    needsComma = true;
+  }
+  if (query_params.equal_to_child_key.has_value()) {
+    if (needsComma) out << ",";
+    out << "equal_to_child_key=";
+    out << *query_params.equal_to_child_key;
+    needsComma = true;
+  }
+  if (query_params.limit_first) {
+    if (needsComma) out << ",";
+    out << "limit_first=";
+    out << query_params.limit_first;
+    needsComma = true;
+  }
+  if (query_params.limit_last) {
+    if (needsComma) out << ",";
+    out << "limit_last=";
+    out << query_params.limit_last;
+    needsComma = true;
+  }
+  out << "}";
+  return out;
+}
+
+}  // namespace internal
 }  // namespace database
 }  // namespace firebase

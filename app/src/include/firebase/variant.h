@@ -1194,6 +1194,8 @@ inline void Variant::set_value_t<char*>(char* value) {
   set_mutable_string(value);
 }
 
+std::ostream& operator<<(std::ostream& out, const Variant& variant);
+
 // NOLINTNEXTLINE - allow namespace overridden
 }  // namespace FIREBASE_NAMESPACE
 

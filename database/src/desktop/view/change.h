@@ -72,6 +72,7 @@ struct Change {
 
 bool operator==(const Change& lhs, const Change& rhs);
 bool operator!=(const Change& lhs, const Change& rhs);
+std::ostream& operator<<(std::ostream& out, const Change& change);
 
 // Utility functions to create Changes.
 Change ValueChange(const IndexedVariant& snapshot);

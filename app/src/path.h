@@ -17,6 +17,7 @@
 #ifndef FIREBASE_APP_CLIENT_CPP_SRC_PATH_H_
 #define FIREBASE_APP_CLIENT_CPP_SRC_PATH_H_
 
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -124,6 +125,8 @@ class Path {
 
   std::string path_;
 };
+
+std::ostream& operator<<(std::ostream& out, const Path& path);
 
 }  // namespace firebase
 

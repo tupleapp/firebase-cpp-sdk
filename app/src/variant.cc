@@ -24,6 +24,7 @@
 
 #include "app/src/assert.h"
 #include "app/src/include/firebase/internal/platform.h"
+#include "app/src/variant_util.h"
 
 namespace firebase {
 
@@ -560,6 +561,11 @@ const char* Variant::TypeName(Variant::Type t) {
   }
   FIREBASE_ASSERT(t >= 0 && t <= num_variant_types);
   return kTypeNames[t];
+}
+
+std::ostream& operator<<(std::ostream& out, const Variant& variant) {
+  out << util::VariantToJson(variant);
+  return out;
 }
 
 }  // namespace firebase

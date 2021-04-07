@@ -15,6 +15,7 @@
 #ifndef FIREBASE_DATABASE_CLIENT_CPP_SRC_DESKTOP_CORE_INDEXED_VARIANT_H_
 #define FIREBASE_DATABASE_CLIENT_CPP_SRC_DESKTOP_CORE_INDEXED_VARIANT_H_
 
+#include <ostream>
 #include <set>
 
 #include "app/src/include/firebase/variant.h"
@@ -111,10 +112,15 @@ class IndexedVariant {
   Index index_;
 
   friend class IndexedVariantGetOrderByVariantTest;
+  friend std::ostream& operator<<(std::ostream& out,
+                                  const IndexedVariant& indexed_variant);
 };
 
 bool operator==(const IndexedVariant& lhs, const IndexedVariant& rhs);
 bool operator!=(const IndexedVariant& lhs, const IndexedVariant& rhs);
+
+std::ostream& operator<<(std::ostream& out,
+                         const IndexedVariant& indexed_variant);
 
 }  // namespace internal
 }  // namespace database

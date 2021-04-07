@@ -33,6 +33,22 @@ bool operator==(const Change& lhs, const Change& rhs) {
 
 bool operator!=(const Change& lhs, const Change& rhs) { return !(lhs == rhs); }
 
+std::ostream& operator<<(std::ostream& out, const Change& change) {
+  out << "Change{";
+  out << "event_type=";
+  out << change.event_type;
+  out << ",indexed_variant=";
+  out << change.indexed_variant;
+  out << ",child_key=";
+  out << change.child_key;
+  out << ",prev_name=";
+  out << change.prev_name;
+  out << ",old_indexed_variant=";
+  out << change.old_indexed_variant;
+  out << "}";
+  return out;
+}
+
 Change ValueChange(const IndexedVariant& snapshot) {
   return Change(kEventTypeValue, snapshot);
 }

@@ -195,6 +195,27 @@ bool operator!=(const IndexedVariant& lhs, const IndexedVariant& rhs) {
   return !(lhs == rhs);
 }
 
+std::ostream& operator<<(std::ostream& out,
+                         const IndexedVariant& indexed_variant) {
+  out << "IndexedVariant{";
+  out << "variant_=";
+  out << indexed_variant.variant_;
+  out << ",query_params_=";
+  out << indexed_variant.query_params_;
+  out << ",index_={";
+  bool needsComma = false;
+  for (const auto& pvv : indexed_variant.index_) {
+    if (needsComma) out << ",";
+    needsComma = true;
+    out << pvv.first;
+    out << "=";
+    out << pvv.second;
+  }
+  out << "}";
+  out << "}";
+  return out;
+}
+
 }  // namespace internal
 }  // namespace database
 }  // namespace firebase

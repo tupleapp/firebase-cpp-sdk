@@ -160,6 +160,28 @@ inline bool operator!=(const ViewCache& lhs, const ViewCache& rhs) {
   return !(lhs == rhs);
 }
 
+inline std::ostream& operator<<(std::ostream& out, const CacheNode& node) {
+  out << "CacheNode{";
+  out << "indexed_variant=";
+  out << node.indexed_variant();
+  out << ",fully_initialized=";
+  out << node.fully_initialized();
+  out << ",filtered=";
+  out << node.filtered();
+  out << "}";
+  return out;
+}
+
+inline std::ostream& operator<<(std::ostream& out, const ViewCache& cache) {
+  out << "ViewCache{";
+  out << "local_snap_=";
+  out << cache.local_snap();
+  out << ",server_snap_=";
+  out << cache.server_snap();
+  out << "}";
+  return out;
+}
+
 }  // namespace internal
 }  // namespace database
 }  // namespace firebase

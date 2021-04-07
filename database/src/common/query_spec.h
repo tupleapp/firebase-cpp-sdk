@@ -15,6 +15,8 @@
 #ifndef FIREBASE_DATABASE_CLIENT_CPP_SRC_COMMON_QUERY_SPEC_H_
 #define FIREBASE_DATABASE_CLIENT_CPP_SRC_COMMON_QUERY_SPEC_H_
 
+#include <ostream>
+
 #include "app/src/include/firebase/variant.h"
 #include "app/src/optional.h"
 #include "app/src/path.h"
@@ -161,6 +163,9 @@ struct QuerySpec {
   // Parameters that define how a query is being filtered.
   QueryParams params;
 };
+
+std::ostream& operator<<(std::ostream& out, const QuerySpec& query_spec);
+std::ostream& operator<<(std::ostream& out, const QueryParams& query_params);
 
 }  // namespace internal
 }  // namespace database

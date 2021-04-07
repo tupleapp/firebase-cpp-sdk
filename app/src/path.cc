@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <cstring>
 #include <iterator>
+#include <ostream>
 
 namespace firebase {
 
@@ -220,6 +221,13 @@ std::string Path::NormalizeSlashes(const std::string& path) {
     }
   }
   return result;
+}
+
+std::ostream& operator<<(std::ostream& out, const Path& path) {
+  out << "Path(\"";
+  out << path.str();
+  out << "\")";
+  return out;
 }
 
 }  // namespace firebase

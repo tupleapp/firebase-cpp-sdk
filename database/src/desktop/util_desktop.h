@@ -367,4 +367,42 @@ std::map<Path, Variant> VariantToPathMap(const Variant& data);
 }  // namespace database
 }  // namespace firebase
 
+template <typename Sink, typename Arg>
+void Print(Sink& sink, Arg&& arg) {
+  sink << arg;
+}
+
+template <typename Sink, typename FirstArg, typename... RemainingArgs>
+void Print(Sink& sink, FirstArg&& first_arg,
+           RemainingArgs&&... remaining_args) {
+  sink << first_arg;
+  Print(sink, remaining_args...);
+}
+
+template <typename Sink, typename Arg>
+void PrintLine(Sink& sink, Arg&& arg) {
+  sink << arg << std::endl;
+}
+
+template <typename Sink, typename FirstArg, typename... RemainingArgs>
+void PrintLine(Sink& sink, FirstArg&& first_arg,
+               RemainingArgs&&... remaining_args) {
+  sink << first_arg;
+  PrintLine(sink, remaining_args...);
+}
+
+#define TRACE_ON true
+
+#include <iostream>
+
+#ifndef TRACE
+#if TRACE_ON
+#define TRACE(...)                                   \
+  PrintLine(std::cout, __FILE__, ":", __LINE__, ":", \
+            __func__ __VA_OPT__(, ":", ) __VA_ARGS__);
+#else
+#define TRACE(...)
+#endif
+#endif
+
 #endif  // FIREBASE_DATABASE_CLIENT_CPP_SRC_DESKTOP_UTIL_DESKTOP_H_

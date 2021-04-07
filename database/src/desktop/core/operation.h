@@ -130,6 +130,9 @@ struct Operation {
 Optional<Operation> OperationForChild(const Operation& op,
                                       const std::string& child_key);
 
+std::ostream& operator<<(std::ostream& out, const OperationSource& op);
+std::ostream& operator<<(std::ostream& out, const Operation& op);
+
 }  // namespace internal
 }  // namespace database
 }  // namespace firebase
