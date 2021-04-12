@@ -53,7 +53,7 @@ namespace storage {
 
 DEFINE_FIREBASE_VERSION_STRING(FirebaseStorage);
 
-Mutex g_storages_lock;  // NOLINT
+Mutex g_storages_lock("storage/src/common/storage.cc:56 g_storages_lock");  // NOLINT
 static std::map<std::pair<App*, std::string>, Storage*>* g_storages = nullptr;
 
 Storage* Storage::GetInstance(::firebase::App* app,

@@ -35,7 +35,7 @@ class CallbackEntry;
 
 class CallbackQueue : public std::list<SharedPtr<CallbackEntry>> {
  public:
-  CallbackQueue() {}
+  CallbackQueue() : mutex_("app/src/callback.cc:37 CallbackQueue::mutex_") {}
   ~CallbackQueue() {}
 
   // Get the mutex that controls access to this queue.
@@ -108,7 +108,7 @@ class CallbackEntry {
 // Dispatches a queue of callbacks.
 class CallbackDispatcher {
  public:
-  CallbackDispatcher() {}
+  CallbackDispatcher() : execution_mutex_("app/src/callback.cc:111 CallbackDispatcher::execution_mutex_") {}
 
   ~CallbackDispatcher() {
     MutexLock lock(*queue_.mutex());
@@ -187,7 +187,7 @@ class CallbackDispatcher {
 
 static CallbackDispatcher* g_callback_dispatcher = nullptr;
 // Mutex that controls access to g_callback_dispatcher and g_callback_ref_count.
-static Mutex* g_callback_mutex = new Mutex();
+static Mutex* g_callback_mutex = new Mutex("app/src/callback.cc:190 g_callback_mutex");
 static int g_callback_ref_count = 0;
 static Thread::Id g_callback_thread_id;
 static bool g_callback_thread_id_initialized = false;

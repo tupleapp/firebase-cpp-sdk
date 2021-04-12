@@ -71,7 +71,7 @@ class FutureProxyManager {
  public:
   FutureProxyManager(ReferenceCountedFutureImpl* api,
                      const FutureHandle& subject)
-      : api_(api), subject_(subject) {}
+      : mutex_("app/src/reference_counted_future_impl.cc:74 FutureProxyManager::mutex_"), api_(api), subject_(subject) {}
 
   ~FutureProxyManager() {
     MutexLock lock(mutex_);

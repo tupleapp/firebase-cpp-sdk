@@ -82,9 +82,13 @@ struct AuthData {
         user_impl(nullptr),
         listener_impl(nullptr),
         id_token_listener_impl(nullptr),
+        listeners_mutex("auth/src/data.h:85 AuthData::listeners_mutex"),
+        token_listener_mutex("auth/src/data.h:86 AuthData::token_listener_mutex"),
         expect_id_token_listener_callback(false),
         persistent_cache_load_pending(true),
-        destructing(false) {}
+        expect_id_token_mutex("auth/src/data.h:89 AuthData::expect_id_token_mutex"),
+        destructing(false),
+        desctruting_mutex("auth/src/data.h:91 AuthData::desctruting_mutex") {}
 
   ~AuthData() {
     ClearUserInfos(this);

@@ -121,7 +121,8 @@ class ReferenceCountedFutureImpl : public detail::FutureApiInterface {
   static constexpr int kNoFunctionIndex = -1;
 
   explicit ReferenceCountedFutureImpl(size_t last_result_count)
-      : next_future_handle_(kInvalidFutureHandle + 1),
+      : mutex_("app/src/reference_counted_future_impl.h:124"),
+        next_future_handle_(kInvalidFutureHandle + 1),
         last_results_(last_result_count) {}
   ~ReferenceCountedFutureImpl() override;
 

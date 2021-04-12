@@ -47,7 +47,7 @@ const char* GetPlatform() {
 #endif
 }
 
-Mutex* g_firestores_lock = new Mutex();
+Mutex* g_firestores_lock = new Mutex("firestore/src/common/firestore.cc:50 g_firestores_lock");
 std::map<App*, Firestore*>* g_firestores = nullptr;
 
 // Ensures that the cache is initialized.

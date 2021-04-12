@@ -158,7 +158,7 @@ Future<void> ModuleInitializer::InitializeLastResult() {
 }
 
 std::map<std::string, AppCallback*>* AppCallback::callbacks_;
-Mutex* AppCallback::callbacks_mutex_ = new Mutex();
+Mutex* AppCallback::callbacks_mutex_ = new Mutex("app/src/util.cc:161 AppCallback::callbacks_mutex_");
 
 void AppCallback::NotifyAllAppCreated(
     firebase::App* app, std::map<std::string, InitResult>* results) {
@@ -242,7 +242,7 @@ void AppCallback::AddCallback(AppCallback* callback) {
   }
 }
 
-Mutex* StaticFutureData::s_futures_mutex_ = new Mutex();
+Mutex* StaticFutureData::s_futures_mutex_ = new Mutex("app/src/util.cc:245 StaticFutureData::s_futures_mutex_");
 std::map<const void*, StaticFutureData*>* StaticFutureData::s_future_datas_;
 
 // static

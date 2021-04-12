@@ -41,10 +41,16 @@
   firebase::auth::PhoneAuthProvider::Listener* active_listener;
 
   // The mutex protecting Listener callbacks and destruction. Callbacks and destruction are atomic.
-  firebase::Mutex listener_mutex;
+  firebase::Mutex* listener_mutex;
 }
 @end
+
 @implementation PhoneListenerDataObjC
+
+- (id)init {
+  listener_mutex = new firebase::Mutex("auth/src/ios/credential_ios.mm:51 PhoneListenerDataObjC::listener_mutex");
+}
+
 @end
 
 namespace firebase {
@@ -249,7 +255,7 @@ PhoneAuthProvider::Listener::~Listener() {
   // Wait while the Listener is being used (in the callbacks in VerifyPhoneNumber).
   // Then reset the active_listener so that callbacks become no-ops.
   {
-    MutexLock lock(data_->objc->listener_mutex);
+    MutexLock lock(*data_->objc->listener_mutex);
     data_->objc->active_listener = nullptr;
   }
   data_->objc = nil;
@@ -280,7 +286,7 @@ void PhoneAuthProvider::VerifyPhoneNumber(
                                UIDelegate:nil
                                completion:^(NSString *_Nullable verificationID,
                                             NSError *_Nullable error) {
-                          MutexLock lock(objc_listener_data->listener_mutex);
+                          MutexLock lock(*objc_listener_data->listener_mutex);
 
                           // If the listener has been deleted before this callback, do nothing.
                           if (objc_listener_data->active_listener == nullptr) return;
@@ -297,7 +303,7 @@ void PhoneAuthProvider::VerifyPhoneNumber(
 
   // Only call the callback when protected by the mutex.
   {
-    MutexLock lock(objc_listener_data->listener_mutex);
+    MutexLock lock(*objc_listener_data->listener_mutex);
     if (objc_listener_data->active_listener != nullptr) {
       listener->OnCodeAutoRetrievalTimeOut(std::string());
     }

@@ -63,7 +63,7 @@ DEFINE_FIREBASE_VERSION_STRING(FirebaseAuth);
 // reference.
 // TODO(jsanmiya): Ensure all the Auths are destroyed on shutdown.
 std::map<App*, Auth*> g_auths;
-Mutex* g_auths_mutex = new Mutex();
+Mutex* g_auths_mutex = new Mutex("auth/src/auth.cc:66 g_auths_mutex");
 
 // static
 Auth* Auth::GetAuth(App* app, InitResult* init_result_out) {

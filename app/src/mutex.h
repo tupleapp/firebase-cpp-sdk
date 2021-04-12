@@ -17,6 +17,7 @@
 #ifndef FIREBASE_APP_CLIENT_CPP_SRC_MUTEX_H_
 #define FIREBASE_APP_CLIENT_CPP_SRC_MUTEX_H_
 #include <errno.h>
+#include <string>
 
 #include "app/src/include/firebase/internal/platform.h"
 
@@ -44,10 +45,13 @@ class Mutex {
   };
 
   Mutex() { Initialize(kModeRecursive); }
+  explicit Mutex(const std::string& name) : name_(name) { Initialize(kModeRecursive); }
 
   explicit Mutex(Mode mode) { Initialize(mode); }
+  Mutex(const std::string& name, Mode mode) : name_(name) { Initialize(mode); }
 
   ~Mutex() {
+    printf("zzyzx Mutex[%s]::~Mutex()\n", name_.c_str());
 #if !FIREBASE_PLATFORM_WINDOWS
     int ret = pthread_mutex_destroy(&mutex_);
     FIREBASE_ASSERT(ret == 0);
@@ -130,6 +134,8 @@ class Mutex {
     }
 #endif  // !FIREBASE_PLATFORM_WINDOWS
   }
+
+  std::string name_;
 
 #if !FIREBASE_PLATFORM_WINDOWS
   pthread_mutex_t mutex_;

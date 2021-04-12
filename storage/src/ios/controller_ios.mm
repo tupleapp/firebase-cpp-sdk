@@ -29,6 +29,7 @@ namespace internal {
 ControllerInternal::ControllerInternal()
     : storage_(nullptr),
       task_impl_(new FIRStorageObservableTaskPointer(nil)),
+      pending_calls_mutex_("storage/src/ios/controller_ios.h:32 ControllerInternal::pending_calls_mutex_"),
       pending_valid_(false),
       pending_cancel_(false),
       pending_pause_(false) {}
@@ -36,6 +37,7 @@ ControllerInternal::ControllerInternal()
 ControllerInternal::ControllerInternal(const ControllerInternal& other)
     : storage_(other.storage_),
       task_impl_(new FIRStorageObservableTaskPointer(other.task_impl())),
+      pending_calls_mutex_("storage/src/ios/controller_ios.h:40 ControllerInternal::pending_calls_mutex_"),
       pending_valid_(other.pending_valid_),
       pending_cancel_(other.pending_cancel_),
       pending_pause_(other.pending_pause_) {}

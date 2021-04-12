@@ -26,11 +26,13 @@
 
 namespace FIREBASE_NAMESPACE {
 
-Mutex* CleanupNotifier::cleanup_notifiers_by_owner_mutex_ = new Mutex();
+Mutex* CleanupNotifier::cleanup_notifiers_by_owner_mutex_ = new Mutex("app/src/cleanup_notifier.cc:29 CleanupNotifier::cleanup_notifiers_by_owner_mutex_");
 std::map<void *, CleanupNotifier *>
     *CleanupNotifier::cleanup_notifiers_by_owner_;
 
-CleanupNotifier::CleanupNotifier() : cleaned_up_(false) {
+CleanupNotifier::CleanupNotifier() :
+    mutex_("app/src/cleanup_notifier.cc:34 CleanupNotifier::mutex_"),
+    cleaned_up_(false) {
   MutexLock lock(*cleanup_notifiers_by_owner_mutex_);
   if (!cleanup_notifiers_by_owner_) {
     cleanup_notifiers_by_owner_ = new std::map<void *, CleanupNotifier *>();

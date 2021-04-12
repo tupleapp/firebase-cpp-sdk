@@ -40,7 +40,7 @@ typedef uint64_t ScheduleTimeMs;
 // guarded by mutex.
 struct RequestStatusBlock {
   explicit RequestStatusBlock(bool repeat)
-      : mutex(Mutex::kModeNonRecursive),
+      : mutex("app/src/scheduler.h:43 RequestStatusBlock::mutex", Mutex::kModeNonRecursive),
         cancelled(false),
         triggered(false),
         repeat(repeat) {}

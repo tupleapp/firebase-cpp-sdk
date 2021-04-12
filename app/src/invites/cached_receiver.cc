@@ -23,7 +23,8 @@ namespace invites {
 namespace internal {
 
 CachedReceiver::CachedReceiver()
-    : match_strength_(kLinkMatchStrengthNoMatch),
+    : lock_("src/invites/cached_receiver.cc:25 CachedReceiver::lock_"),
+      match_strength_(kLinkMatchStrengthNoMatch),
       result_code_(0),
       has_pending_invite_(false),
       receiver_(nullptr) {}

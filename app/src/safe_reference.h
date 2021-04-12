@@ -52,7 +52,7 @@ class SafeReference {
 
  private:
   struct ReferenceData {
-    explicit ReferenceData(T* ref) : mutex(Mutex::kModeRecursive), ref(ref) {}
+    explicit ReferenceData(T* ref) : mutex("app/src/safe_reference.h:55 ReferenceData::mutex", Mutex::kModeRecursive), ref(ref) {}
 
     Mutex mutex;
     T* ref;

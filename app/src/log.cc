@@ -64,7 +64,7 @@ Mutex* g_log_mutex = nullptr;
 class InitializeLogMutex {
  public:
   InitializeLogMutex() {
-    if (!g_log_mutex) g_log_mutex = new Mutex();
+    if (!g_log_mutex) g_log_mutex = new Mutex("app/src/log.cc:67 g_log_mutex");
   }
 };
 InitializeLogMutex g_log_mutex_initializer;
@@ -133,7 +133,7 @@ void LogMessageWithCallbackV(LogLevel log_level, const char* format,
   // constructed before we attempt to use it.  Of course, this isn't thread
   // safe but the first time this is called on any platform it will be from
   // a single thread to initialize the API.
-  if (!g_log_mutex) g_log_mutex = new Mutex();
+  if (!g_log_mutex) g_log_mutex = new Mutex("app/src/log.cc:136 g_log_mutex");
   MutexLock lock(*g_log_mutex);
 
   LogInitialize();

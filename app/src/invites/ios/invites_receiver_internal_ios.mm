@@ -115,7 +115,7 @@ static InvitesReceiverInternalIos::Callbacks* g_callbacks = nullptr;
 static InvitesIosStartupImpl g_ios_startup_impl(0);
 
 // Mutex for the static stuff.
-static ::firebase::Mutex g_static_mutex;
+static ::firebase::Mutex g_static_mutex("app/src/invites/ios/invites_receiver_internal_ios.mm:118 g_static_mutex");
 
 // Fetch dynamic link / invite using the currently instanced receiver object.
 // Do nothing if a receiver isn't available.
@@ -172,8 +172,9 @@ BOOL InvitesReceiverInternalIos::OpenUniversalLink(NSURL *universal_link) {
 InvitesReceiverInternalIos::InvitesReceiverInternalIos(
     const ::firebase::App &app)
     : InvitesReceiverInternal(app),
-      callback_mutex_(Mutex::kModeNonRecursive),
-      fetch_in_progress_(false) {
+      callback_mutex_("app/src/invites/ios/invites_receiver_internal_ios.mm:175 InvitesReceiverInternalIos::callback_mutex_", Mutex::kModeNonRecursive),
+      fetch_in_progress_(false),
+      fetch_mutex_("app/src/invites/ios/invites_receiver_internal_ios.mm:177 InvitesReceiverInternalIos::fetch_mutex_") {
   assert(!g_invites_receiver);
   g_invites_receiver = this;
   g_ios_startup_impl.Register();

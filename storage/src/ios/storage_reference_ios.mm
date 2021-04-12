@@ -90,7 +90,7 @@ enum StorageReferenceFn {
 
 StorageReferenceInternal::StorageReferenceInternal(StorageInternal* storage,
                                                    UniquePtr<FIRStorageReferencePointer> impl)
-    : storage_(storage), impl_(std::move(impl)) {
+    : storage_(storage), impl_(std::move(impl)), controller_init_mutex_("storage/src/ios/storage_reference_ios.h:93 StorageReferenceInternal::controller_init_mutex_") {
   storage_->future_manager().AllocFutureApi(this, kStorageReferenceFnCount);
 }
 
@@ -99,7 +99,7 @@ StorageReferenceInternal::~StorageReferenceInternal() {
 }
 
 StorageReferenceInternal::StorageReferenceInternal(const StorageReferenceInternal& other)
-    : storage_(other.storage_) {
+    : storage_(other.storage_), controller_init_mutex_("storage/src/ios/storage_reference_ios.h:93 StorageReferenceInternal::controller_init_mutex_") {
   impl_.reset(new FIRStorageReferencePointer(*other.impl_));
   storage_->future_manager().AllocFutureApi(this, kStorageReferenceFnCount);
 }
@@ -112,7 +112,7 @@ StorageReferenceInternal& StorageReferenceInternal::operator=(
 
 #if defined(FIREBASE_USE_MOVE_OPERATORS) || defined(DOXYGEN)
 StorageReferenceInternal::StorageReferenceInternal(StorageReferenceInternal&& other)
-    : storage_(other.storage_), impl_(std::move(other.impl_)) {
+    : storage_(other.storage_), impl_(std::move(other.impl_)), controller_init_mutex_("storage/src/ios/storage_reference_ios.h:93 StorageReferenceInternal::controller_init_mutex_") {
   other.storage_ = nullptr;
   other.impl_ = MakeUnique<FIRStorageReferencePointer>(nil);
   storage_->future_manager().MoveFutureApi(&other, this);

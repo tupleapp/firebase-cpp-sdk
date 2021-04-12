@@ -31,7 +31,7 @@ const char kHeartbeatFilename[] = "HEARTBEAT_INFO_STORAGE";
 
 // Returns the mutex that protects accesses to the storage file.
 Mutex& FileMutex() {
-  static Mutex* mutex_ = new Mutex(Mutex::kModeNonRecursive);
+  static Mutex* mutex_ = new Mutex("app/src/heartbeat_date_storage_desktop.cc:34 static Mutex* mutex_", Mutex::kModeNonRecursive);
   return *mutex_;
 }
 

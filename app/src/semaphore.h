@@ -49,7 +49,7 @@ namespace FIREBASE_NAMESPACE {
 
 class Semaphore {
  public:
-  explicit Semaphore(int initial_count) {
+  explicit Semaphore(int initial_count) : cond_mutex_("app/src/semaphore.h:52 cond_mutex_") {
 #if FIREBASE_PLATFORM_OSX || FIREBASE_PLATFORM_IOS
     // MacOS requires named semaphores, and does not support unnamed.
     // Generate a unique string for the semaphore name:

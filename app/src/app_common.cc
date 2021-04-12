@@ -255,7 +255,7 @@ class LibraryRegistry {
 };
 
 // Guards g_apps and g_default_app.
-static Mutex* g_app_mutex = new Mutex();
+static Mutex* g_app_mutex = new Mutex("app/src/app_common.cc:258");
 static std::map<std::string, UniquePtr<AppData>>* g_apps;
 static App* g_default_app = nullptr;
 LibraryRegistry* LibraryRegistry::library_registry_ = nullptr;
