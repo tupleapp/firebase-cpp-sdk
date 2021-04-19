@@ -1,0 +1,163 @@
+{
+  "project_info": {
+    "project_number": "35775074661",
+    "firebase_url": "https://dconeybe-testing.firebaseio.com",
+    "project_id": "dconeybe-testing",
+    "storage_bucket": "dconeybe-testing.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35775074661:android:bda3aad6830ebc96c4d18c",
+        "android_client_info": {
+          "package_name": "com.google.dconeybe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNXIbbFmlXIE6LmCzDQAYqITefbhixX4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "35775074661-sjh9q44t5vh42p9p5g65dkp4a5ofk0sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dconeybe.FriendlyEats"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35775074661:android:3375fd94e951351dc4d18c",
+        "android_client_info": {
+          "package_name": "com.google.firebase.cpp.firestore.testapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35775074661-ceg82h1kgvpk0gp6jaul7lcq7hoohl62.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.firebase.cpp.firestore.testapp",
+            "certificate_hash": "c09131d74ad81d2347d6e7f45f82f7c1adcc2153"
+          }
+        },
+        {
+          "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNXIbbFmlXIE6LmCzDQAYqITefbhixX4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "35775074661-sjh9q44t5vh42p9p5g65dkp4a5ofk0sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dconeybe.FriendlyEats"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35775074661:android:60b505958d4a0a78c4d18c",
+        "android_client_info": {
+          "package_name": "com.google.firebase.example.fireeats"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNXIbbFmlXIE6LmCzDQAYqITefbhixX4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "35775074661-sjh9q44t5vh42p9p5g65dkp4a5ofk0sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dconeybe.FriendlyEats"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35775074661:android:01948b921725269ec4d18c",
+        "android_client_info": {
+          "package_name": "com.google.firebase.firestore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNXIbbFmlXIE6LmCzDQAYqITefbhixX4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "35775074661-i6o3r6v7a579ke4t7g55l8891hikuh85.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "35775074661-sjh9q44t5vh42p9p5g65dkp4a5ofk0sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dconeybe.FriendlyEats"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
