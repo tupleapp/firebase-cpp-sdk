@@ -38,6 +38,8 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+#define RUN_ALL false
+
 using ::testing::Eq;
 using ::testing::Not;
 using ::testing::Pointwise;
@@ -362,6 +364,8 @@ void SyncTreeTest::RunOne(const char* name) {
   }
   EXPECT_TRUE(false) << "Didn't find test spec with name " << name;
 }
+
+#if RUN_ALL
 
 TEST(EventEqTest, Matcher) {
   TestEventRegistration event_registration((QuerySpec()));
@@ -692,9 +696,13 @@ TEST_F(SyncTreeTest, UserDeepSetPullsInCorrectValues) {
   RunOne("User deep set pulls in correct values");
 }
 
+#endif
+
 TEST_F(SyncTreeTest, QueriesWithEqualToNullWork) {
   RunOne("Queries with equalTo(null) work");
 }
+
+#if RUN_ALL
 
 TEST_F(SyncTreeTest, RevertedWritesUpdateQuery) {
   RunOne("Reverted writes update query");
@@ -875,6 +883,8 @@ TEST_F(SyncTreeTest, DeepUpdateReturnsMinimumDataRequired) {
 TEST_F(SyncTreeTest, DeepUpdateRaisesAllEvents) {
   RunOne("Deep update raises all events");
 }
+
+#endif
 
 }  // namespace
 }  // namespace internal

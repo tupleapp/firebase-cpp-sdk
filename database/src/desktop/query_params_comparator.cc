@@ -37,14 +37,12 @@ static const Variant kMinVariant = Variant::FromStaticBlob(  // NOLINT
 static const Variant kMaxVariant = Variant::FromStaticBlob(  // NOLINT
     QueryParamsComparator::kMaxKey, sizeof(QueryParamsComparator::kMaxKey));
 
-const std::pair<Optional<Variant>, Optional<Variant>>
-    QueryParamsComparator::kMinNode =
-        std::make_pair(Optional<Variant>(QueryParamsComparator::kMinKey),
-                       Optional<Variant>(kMinVariant));  // NOLINT
-const std::pair<Optional<Variant>, Optional<Variant>>
-    QueryParamsComparator::kMaxNode =
-        std::make_pair(Optional<Variant>(QueryParamsComparator::kMaxKey),
-                       Optional<Variant>(kMaxVariant));  // NOLINT
+const std::pair<Variant, Variant> QueryParamsComparator::kMinNode =
+    std::make_pair(QueryParamsComparator::kMinKey,
+                   kMinVariant);  // NOLINT
+const std::pair<Variant, Variant> QueryParamsComparator::kMaxNode =
+    std::make_pair(QueryParamsComparator::kMaxKey,
+                   kMaxVariant);  // NOLINT
 
 static int VariantIsSentinel(const Variant& key, const Variant& value) {
   if (key == QueryParamsComparator::kMinKey && value == kMinVariant) {

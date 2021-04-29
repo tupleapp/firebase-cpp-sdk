@@ -19,6 +19,7 @@
 
 #include "app/src/include/firebase/variant.h"
 #include "database/src/common/query_spec.h"
+#include "database/src/desktop/util_desktop.h"
 
 namespace firebase {
 namespace database {
@@ -28,13 +29,9 @@ inline const Variant* ToVariantPtr(const Optional<Variant>& v) {
   return v.has_value() ? &v.value() : nullptr;
 }
 
-inline const Variant* ToVariantPtr(const Variant& v) {
-  return &v;
-}
+inline const Variant* ToVariantPtr(const Variant& v) { return &v; }
 
-inline const Variant* ToVariantPtr(const Variant* v) {
-  return v;
-}
+inline const Variant* ToVariantPtr(const Variant* v) { return v; }
 
 // A Variant comparator, only meant for internal use.
 //
@@ -74,12 +71,10 @@ inline const Variant* ToVariantPtr(const Variant* v) {
 //    kOrderByKey rules.
 class QueryParamsComparator {
  public:
-  QueryParamsComparator() : query_params_(nullptr) {
-  }
+  QueryParamsComparator() : query_params_(nullptr) {}
 
   explicit QueryParamsComparator(const QueryParams* query_params)
-      : query_params_(query_params) {
-  }
+      : query_params_(query_params) {}
 
   // Compare two database values given their key and value.
   template <typename V1, typename V2>
@@ -89,9 +84,7 @@ class QueryParamsComparator {
   }
 
   template <typename KeyA, typename ValueA, typename KeyB, typename ValueB>
-  int Compare(const KeyA& key_a,
-              const ValueA& value_a,
-              const KeyB& key_b,
+  int Compare(const KeyA& key_a, const ValueA& value_a, const KeyB& key_b,
               const ValueB& value_b) const {
     return CompareInternal(ToVariantPtr(key_a), ToVariantPtr(value_a),
                            ToVariantPtr(key_b), ToVariantPtr(value_b));
@@ -108,14 +101,12 @@ class QueryParamsComparator {
   // These values will always be sorted before or after all over values.
   static const char kMinKey[];
   static const char kMaxKey[];
-  static const std::pair<Optional<Variant>, Optional<Variant>> kMinNode;
-  static const std::pair<Optional<Variant>, Optional<Variant>> kMaxNode;
+  static const std::pair<Variant, Variant> kMinNode;
+  static const std::pair<Variant, Variant> kMaxNode;
 
  private:
-  int CompareInternal(const Variant* key_a,
-                      const Variant* value_a,
-                      const Variant* key_b,
-                      const Variant* value_b) const;
+  int CompareInternal(const Variant* key_a, const Variant* value_a,
+                      const Variant* key_b, const Variant* value_b) const;
 
   int CompareChildren(const Variant& value_a, const Variant& value_b) const;
 
@@ -126,11 +117,9 @@ class QueryParamsComparator {
 // as the std::set's comparator argument.
 class QueryParamsLesser {
  public:
-  QueryParamsLesser() : comparator_() {
-  }
+  QueryParamsLesser() : comparator_() {}
   explicit QueryParamsLesser(const QueryParams* query_params)
-      : comparator_(query_params) {
-  }
+      : comparator_(query_params) {}
 
   template <typename V1, typename V2>
   bool operator()(const std::pair<V1, V1>& a,
