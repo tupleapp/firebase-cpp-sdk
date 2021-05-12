@@ -15,6 +15,9 @@
 #include "firebase_test_framework.h"  // NOLINT
 
 #include <cstdio>
+#include <cstring>
+#include <string>
+#include <vector>
 
 #include "firebase/future.h"
 
@@ -294,7 +297,42 @@ std::ostream& operator<<(std::ostream& os, const Variant& v) {
 }
 }  // namespace firebase
 
+namespace {
+
+/**
+ * Provides a means to easily tweak the command-line arguments specified to
+ * `main()` before they are processed by googletest. For example, this method
+ * can be easily edited to specify --gtest_list_tests or --gtest_filter.
+ */
+char** EditMainArgs(int* argc, const char const * const * const argv) {
+  // Put the args into a vector of strings because modifying string objects in
+  // a vector is far easier than modifying a char** array.
+  std::vector<std::string> args_vector;
+  for (int i=0; i<*argc; ++i) {
+      args_vector.push_back(argv[i]);
+  }
+
+  // Add the desired arguments to the vector.
+  // e.g.  args_vector.push_back("--gtest_list_tests");
+  args_vector.push_back("--gtest_filter=TransactionExtraTest*");
+
+  // Write the elements of the vector back into argv and modify argc.
+  char** new_argv = new char*[args_vector.size()];
+  for (int i=0; i<args_vector.size(); ++i) {
+    const char* arg = args_vector[i].c_str();
+    char* arg_copy = new char[strlen(arg) + 1];
+    std::strcpy(arg_copy, arg);
+    new_argv[i] = arg_copy;
+  }
+
+  *argc = static_cast<int>(args_vector.size());
+  return new_argv;
+}
+
+}  // namespace
+
 extern "C" int common_main(int argc, char* argv[]) {
+  argv = EditMainArgs(&argc, argv);
   ::testing::InitGoogleTest(&argc, argv);
   firebase_test_framework::FirebaseTest::SetArgs(argc, argv);
   app_framework::SetLogLevel(app_framework::kDebug);
