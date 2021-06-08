@@ -123,7 +123,7 @@ function(download_external_sources)
     endif()
 
     execute_process(
-      COMMAND "python" "${PROJECT_SOURCE_DIR}/scripts/patch_websockets.py" 
+      COMMAND "/Users/dconeybe/dev/firebase/pyvenv/bin/python" "${PROJECT_SOURCE_DIR}/scripts/patch_websockets.py" 
               "-file" "${PROJECT_BINARY_DIR}/external/src/uWebSockets/src/Socket.h"
               "-cmakefile" "${PROJECT_SOURCE_DIR}/cmake/external/uWebSockets.cmake" 
       RESULT_VARIABLE STATUS)

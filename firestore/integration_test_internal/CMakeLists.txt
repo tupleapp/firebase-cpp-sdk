@@ -39,7 +39,7 @@ endif()
 if(NOT ANDROID)
   if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/../../setup_integration_tests.py)
     # If this is running from inside the SDK directory, run the setup script.
-    execute_process(COMMAND "python" "${CMAKE_CURRENT_LIST_DIR}/../../setup_integration_tests.py" "${CMAKE_CURRENT_LIST_DIR}")
+    execute_process(COMMAND "/Users/dconeybe/dev/firebase/pyvenv/bin/python" "${CMAKE_CURRENT_LIST_DIR}/../../setup_integration_tests.py" "${CMAKE_CURRENT_LIST_DIR}")
   endif()
 endif()
 
