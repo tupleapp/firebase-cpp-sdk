@@ -657,6 +657,9 @@ TEST_F(FirebaseFirestoreBasicTest, TestDocumentChangeNpos) {
   // would therefore fail to link if used.
   EXPECT_EQ(firebase::firestore::DocumentChange::npos,
             static_cast<std::size_t>(-1));
+  
+  auto* npos_ptr = &firebase::firestore::DocumentChange::npos;
+  EXPECT_EQ(*npos_ptr, static_cast<std::size_t>(-1));
 }
 
 TEST_F(FirebaseFirestoreBasicTest,
