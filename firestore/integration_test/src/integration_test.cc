@@ -143,27 +143,24 @@ firebase::auth::Auth* FirebaseFirestoreBasicTest::shared_auth_;
 void FirebaseFirestoreBasicTest::SetUpTestSuite() { InitializeAppAndAuth(); }
 
 void FirebaseFirestoreBasicTest::InitializeAppAndAuth() {
-  LogDebug("Initialize Firebase App.");
-
   FindFirebaseConfig(FIREBASE_CONFIG_STRING);
 
 #if defined(__ANDROID__)
   shared_app_ = ::firebase::App::Create(app_framework::GetJniEnv(),
                                         app_framework::GetActivity());
 #else
+  LogDebug("zzyzx firebase::App::Create()");
   shared_app_ = ::firebase::App::Create();
 #endif  // defined(__ANDROID__)
 
   ASSERT_NE(shared_app_, nullptr);
 
-  LogDebug("Initializing Auth.");
-
   // Initialize Firebase Auth.
   ::firebase::ModuleInitializer initializer;
   initializer.Initialize(shared_app_, &shared_auth_,
                          [](::firebase::App* app, void* target) {
-                           LogDebug("Attempting to initialize Firebase Auth.");
                            ::firebase::InitResult result;
+                           LogDebug("zzyzx firebase::auth::Auth::GetAuth()");
                            *reinterpret_cast<firebase::auth::Auth**>(target) =
                                ::firebase::auth::Auth::GetAuth(app, &result);
                            return result;
@@ -173,8 +170,6 @@ void FirebaseFirestoreBasicTest::InitializeAppAndAuth() {
 
   ASSERT_EQ(initializer.InitializeLastResult().error(), 0)
       << initializer.InitializeLastResult().error_message();
-
-  LogDebug("Successfully initialized Auth.");
 
   ASSERT_NE(shared_auth_, nullptr);
 
@@ -186,14 +181,13 @@ void FirebaseFirestoreBasicTest::TearDownTestSuite() { TerminateAppAndAuth(); }
 
 void FirebaseFirestoreBasicTest::TerminateAppAndAuth() {
   if (shared_auth_) {
-    LogDebug("Signing out.");
     SignOut();
-    LogDebug("Shutdown Auth.");
+    LogDebug("zzyzx delete Auth");
     delete shared_auth_;
     shared_auth_ = nullptr;
   }
   if (shared_app_) {
-    LogDebug("Shutdown App.");
+    LogDebug("zzyzx delete App");
     delete shared_app_;
     shared_app_ = nullptr;
   }
@@ -217,7 +211,6 @@ void FirebaseFirestoreBasicTest::TearDown() {
   // Delete the shared path, if there is one.
   if (initialized_) {
     if (!cleanup_documents_.empty() && firestore_ && shared_app_) {
-      LogDebug("Cleaning up documents.");
       std::vector<firebase::Future<void>> cleanups;
       cleanups.reserve(cleanup_documents_.size());
       for (int i = 0; i < cleanup_documents_.size(); ++i) {
@@ -234,13 +227,12 @@ void FirebaseFirestoreBasicTest::TearDown() {
 }
 
 void FirebaseFirestoreBasicTest::InitializeFirestore() {
-  LogDebug("Initializing Firebase Firestore.");
 
   ::firebase::ModuleInitializer initializer;
   initializer.Initialize(
       shared_app_, &firestore_, [](::firebase::App* app, void* target) {
-        LogDebug("Attempting to initialize Firebase Firestore.");
         ::firebase::InitResult result;
+        LogDebug("zzyzx firebase::firestore::Firestore::GetInstance()");
         *reinterpret_cast<firebase::firestore::Firestore**>(target) =
             firebase::firestore::Firestore::GetInstance(app, &result);
         return result;
@@ -251,7 +243,6 @@ void FirebaseFirestoreBasicTest::InitializeFirestore() {
   ASSERT_EQ(initializer.InitializeLastResult().error(), 0)
       << initializer.InitializeLastResult().error_message();
 
-  LogDebug("Successfully initialized Firebase Firestore.");
 
   initialized_ = true;
 }
@@ -260,7 +251,7 @@ void FirebaseFirestoreBasicTest::TerminateFirestore() {
   if (!initialized_) return;
 
   if (firestore_) {
-    LogDebug("Shutdown the Firestore library.");
+    LogDebug("zzyzx delete Firestore");
     delete firestore_;
     firestore_ = nullptr;
   }
@@ -271,10 +262,11 @@ void FirebaseFirestoreBasicTest::TerminateFirestore() {
 
 void FirebaseFirestoreBasicTest::SignIn() {
   if (shared_auth_->current_user() != nullptr) {
+    LogDebug("zzyzx shared_auth_->current_user() returned nullptr");
     // Already signed in.
     return;
   }
-  LogDebug("Signing in.");
+  LogDebug("zzyzx Auth::SignInAnonymously()");
   firebase::Future<firebase::auth::User*> sign_in_future =
       shared_auth_->SignInAnonymously();
   WaitForCompletion(sign_in_future, "SignInAnonymously");
@@ -296,10 +288,12 @@ void FirebaseFirestoreBasicTest::SignOut() {
   }
 
   if (shared_auth_->current_user()->is_anonymous()) {
+    LogDebug("zzyzx Auth::current_user()->Delete()");
     // If signed in anonymously, delete the anonymous user.
     WaitForCompletion(shared_auth_->current_user()->Delete(),
                       "DeleteAnonymousUser");
   } else {
+    LogDebug("zzyzx Auth::SignOut()");
     // If not signed in anonymously (e.g. if the tests were modified to sign in
     // as an actual user), just sign out normally.
     shared_auth_->SignOut();
@@ -310,6 +304,7 @@ void FirebaseFirestoreBasicTest::SignOut() {
     }
   }
   EXPECT_EQ(shared_auth_->current_user(), nullptr);
+  LogDebug("zzyzx Auth::current_user() now ==nullptr");
 }
 
 firebase::firestore::CollectionReference
@@ -556,7 +551,6 @@ TEST_F(FirebaseFirestoreBasicTest, TestRunTransaction) {
             Doc("1"),
             firebase::firestore::MapFieldValue{
                 {"int", firebase::firestore::FieldValue::Integer(456)}});
-        LogDebug("Previous value: %lld", prev_int);
         transaction.Update(Doc("2"),
                            firebase::firestore::MapFieldValue{
                                {"int", firebase::firestore::FieldValue::Integer(
