@@ -262,10 +262,11 @@ void FirebaseFirestoreBasicTest::TerminateFirestore() {
 
 void FirebaseFirestoreBasicTest::SignIn() {
   if (shared_auth_->current_user() != nullptr) {
-    LogDebug("zzyzx shared_auth_->current_user() returned nullptr");
+    LogDebug("zzyzx Auth::current_user() returned non-null");
     // Already signed in.
     return;
   }
+  LogDebug("zzyzx Auth::current_user() returned nullptr");
   LogDebug("zzyzx Auth::SignInAnonymously()");
   firebase::Future<firebase::auth::User*> sign_in_future =
       shared_auth_->SignInAnonymously();
@@ -283,9 +284,11 @@ void FirebaseFirestoreBasicTest::SignOut() {
     return;
   }
   if (shared_auth_->current_user() == nullptr) {
+    LogDebug("zzyzx Auth::current_user() returned nullptr");
     // Already signed out.
     return;
   }
+  LogDebug("zzyzx Auth::current_user() returned non-null");
 
   if (shared_auth_->current_user()->is_anonymous()) {
     LogDebug("zzyzx Auth::current_user()->Delete()");
