@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <list>
+#include <mutex>
 #include <unordered_set>
 
 #if defined(FIREBASE_USE_STD_FUNCTION)
@@ -213,6 +214,76 @@ class FirestoreInternal {
   UniquePtr<PromiseFactory<AsyncFn>> promises_;
 
   CleanupNotifier cleanup_;
+};
+
+// Holds a "weak reference" to a `FirestoreInternal` object.
+//
+// When the given `FirestoreInternal` object is deleted, this object will null
+// out its pointer to it.
+//
+// To use the encapsulated `FirestoreInternal` object, invoke the `Run()` method
+// with a callback that will be specified a pointer to the `FirestoreInternal`
+// object.
+class FirestoreInternalWeakReference {
+ public:
+  explicit FirestoreInternalWeakReference(FirestoreInternal* firestore)
+      : firestore_(firestore) {
+    if (firestore_) {
+      firestore_->cleanup().RegisterObject(this, CleanUp);
+    }
+  }
+
+  FirestoreInternalWeakReference(const FirestoreInternalWeakReference& rhs) {
+    MutexLock lock(rhs.mutex_);
+    firestore_ = rhs.firestore_;
+    if (firestore_) {
+      firestore_->cleanup().RegisterObject(this, CleanUp);
+    }
+  }
+
+  FirestoreInternalWeakReference& operator=(
+      const FirestoreInternalWeakReference& rhs) = delete;
+
+  ~FirestoreInternalWeakReference() {
+    MutexLock lock(mutex_);
+    if (firestore_) {
+      firestore_->cleanup().UnregisterObject(this);
+    }
+  }
+
+ private:
+  static void CleanUp(void* obj) {
+    auto* instance = static_cast<FirestoreInternalWeakReference*>(obj);
+    MutexLock lock(instance->mutex_);
+    instance->firestore_ = nullptr;
+  }
+
+  mutable Mutex mutex_;
+  FirestoreInternal* firestore_ = nullptr;
+
+  // Declare `Run()` after declaring `firestore_` so that `firestore_` can be
+  // referenced in the `decltype` return type of `Run()`.
+ public:
+  /**
+   * Invokes the given function with the referent `FirestoreInternal` object,
+   * specifying `nullptr` if the `FirestoreInternal` object has been deleted,
+   * returning whatever the given callback returns.
+   *
+   * If a non-null `FirestoreInternal` pointer was specified to the method, then
+   * that `FirestoreInternal` object will remain alive (i.e. will not be
+   * deleted) for the duration of the callback's execution.
+   *
+   * If this method is invoked concurrently then calls will be serialized in
+   * an undefined order. Recursive calls of this method are not allowed and the
+   * behavior, if called recursively, is undefined, and may deadlock.
+   *
+   * This method returns whatever the given callback returns.
+   */
+  template <typename CallbackT>
+  auto Run(CallbackT callback) -> decltype(callback(this->firestore_)) {
+    MutexLock lock(mutex_);
+    return callback(firestore_);
+  }
 };
 
 }  // namespace firestore

@@ -48,8 +48,6 @@ class Promise {
                               PublicType* result) = 0;
   };
 
-  ~Promise() {}
-
   Promise(const Promise&) = delete;
   Promise& operator=(const Promise&) = delete;
 
@@ -66,33 +64,44 @@ class Promise {
                                  completer, kApiIdentifier);
   }
 
-  Future<PublicType> GetFuture() { return MakeFuture(impl_, handle_); }
+  Future<PublicType> GetFuture() {
+    return firestore_ref_.Run([this](FirestoreInternal* firestore) {
+      if (firestore == nullptr) {
+        return Future<PublicType>{};
+      }
+      return MakeFuture(this->impl_, this->handle_);
+    });
+  }
 
  private:
   // The constructor is intentionally private.
   // Create instances with `PromiseFactory`.
-  Promise(ReferenceCountedFutureImpl* impl,
-          FirestoreInternal* firestore,
+  Promise(const FirestoreInternalWeakReference& firestore_ref,
+          ReferenceCountedFutureImpl* impl,
           Completion* completion)
-      : completer_(MakeUnique<Completer<PublicType, InternalType>>(
-            impl, firestore, completion)),
+      : firestore_ref_(firestore_ref),
+        completer_(MakeUnique<Completer<PublicType, InternalType>>(
+            firestore_ref, impl, completion)),
         impl_(impl) {}
 
   template <typename PublicT>
   class CompleterBase {
    public:
-    CompleterBase(ReferenceCountedFutureImpl* impl,
-                  FirestoreInternal* firestore,
+    CompleterBase(const FirestoreInternalWeakReference& firestore_ref,
+                  ReferenceCountedFutureImpl* impl,
                   Completion* completion)
-        : impl_{impl}, firestore_{firestore}, completion_(completion) {}
+        : firestore_ref_{firestore_ref}, impl_{impl}, completion_(completion) {}
 
     virtual ~CompleterBase() = default;
 
-    FirestoreInternal* firestore() { return firestore_; }
-
     SafeFutureHandle<PublicT> Alloc(int fn_index) {
-      handle_ = impl_->SafeAlloc<PublicT>(fn_index);
-      return handle_;
+      return firestore_ref_.Run([this, fn_index](FirestoreInternal* firestore) {
+        if (firestore == nullptr) {
+          return SafeFutureHandle<PublicT>{};
+        }
+        this->handle_ = impl_->SafeAlloc<PublicT>(fn_index);
+        return this->handle_;
+      });
     }
 
     virtual void CompleteWithResult(jobject raw_result,
@@ -104,8 +113,14 @@ class Promise {
       jni::Object result(raw_result);
 
       if (result_code == util::kFutureResultSuccess) {
-        // When succeeded, result is the resolved object of the Future.
-        SucceedWithResult(env, result);
+        firestore_ref_.Run([this, &env, &result](FirestoreInternal* firestore) {
+          if (firestore != nullptr) {
+            this->SucceedWithResult(env, result, firestore);
+          }
+        });
+
+        delete this;
+
         return;
       }
 
@@ -123,7 +138,12 @@ class Promise {
                                   result_code);
           break;
       }
-      this->impl_->Complete(this->handle_, error_code, status_message);
+      firestore_ref_.Run(
+          [this, error_code, status_message](FirestoreInternal* firestore) {
+            if (firestore != nullptr) {
+              this->impl_->Complete(this->handle_, error_code, status_message);
+            }
+          });
       if (this->completion_ != nullptr) {
         this->completion_->CompleteWith(error_code, status_message, nullptr);
       }
@@ -131,12 +151,15 @@ class Promise {
     }
 
     virtual void SucceedWithResult(jni::Env& env,
-                                   const jni::Object& result) = 0;
+                                   const jni::Object& result,
+                                   FirestoreInternal* firestore) = 0;
+
+   private:
+    FirestoreInternalWeakReference firestore_ref_;
 
    protected:
     SafeFutureHandle<PublicT> handle_;
     ReferenceCountedFutureImpl* impl_;  // not owning
-    FirestoreInternal* firestore_;      // not owning
     Completion* completion_;            // not owning
   };
 
@@ -148,9 +171,11 @@ class Promise {
    public:
     using CompleterBase<PublicT>::CompleterBase;
 
-    void SucceedWithResult(jni::Env& env, const jni::Object& result) override {
+    void SucceedWithResult(jni::Env& env,
+                           const jni::Object& result,
+                           FirestoreInternal* firestore) override {
       auto future_result =
-          MakePublic<PublicT, InternalT>(env, this->firestore_, result);
+          MakePublic<PublicT, InternalT>(env, firestore, result);
 
       this->impl_->CompleteWithResult(this->handle_, Error::kErrorOk,
                                       /*error_msg=*/"", future_result);
@@ -167,7 +192,9 @@ class Promise {
    public:
     using CompleterBase<void>::CompleterBase;
 
-    void SucceedWithResult(jni::Env& env, const jni::Object& result) override {
+    void SucceedWithResult(jni::Env& env,
+                           const jni::Object& result,
+                           FirestoreInternal*) override {
       this->impl_->Complete(this->handle_, Error::kErrorOk, /*error_msg=*/"");
       if (this->completion_ != nullptr) {
         this->completion_->CompleteWith(Error::kErrorOk, /*error_message*/ "",
@@ -188,6 +215,8 @@ class Promise {
       data->CompleteWithResult(result, result_code, status_message);
     }
   }
+
+  FirestoreInternalWeakReference firestore_ref_;
 
   UniquePtr<Completer<PublicType, InternalType>> completer_;
 
