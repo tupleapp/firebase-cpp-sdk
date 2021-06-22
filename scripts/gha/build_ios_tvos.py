@@ -435,7 +435,7 @@ def build_xcframeworks(frameworks_path, xcframeworks_path, template_info_plist):
                      dest_headers_path)
 
 
-def cmake_configure_and_build(source_path, build_path, toolchain,
+def cmake_configure_and_build1(source_path, build_path, toolchain,
                               archive_output_path, targets,
                               architecture=None, toolchain_platform=None):
   """CMake configure build project and build libraries.
@@ -462,12 +462,20 @@ def cmake_configure_and_build(source_path, build_path, toolchain,
     cmd.append('-DPLATFORM={0}'.format(toolchain_platform))
   utils.run_command(cmd)
 
+  # # CMake build for os-platform-architecture
+  # cmd = ['cmake', '--build', build_path, '-j', str(os.cpu_count())]
+  # cmd.append('--target')
+  # cmd.extend(targets)
+  # utils.run_command(cmd)
+
+def cmake_configure_and_build2(source_path, build_path, toolchain,
+                              archive_output_path, targets,
+                              architecture=None, toolchain_platform=None):
   # CMake build for os-platform-architecture
   cmd = ['cmake', '--build', build_path, '-j', str(os.cpu_count())]
   cmd.append('--target')
   cmd.extend(targets)
   utils.run_command(cmd)
-
 
 def main():
   args = parse_cmdline_args()
@@ -518,7 +526,11 @@ def main():
         toolchain_platform = os_platform_variant_config['toolchain_platform'] \
                              if apple_os == 'tvos' else None
 
-        process = multiprocessing.Process(target=cmake_configure_and_build,
+        cmake_configure_and_build1(args.source_dir, build_path,
+                                  os_platform_variant_config['toolchain'],
+                                  archive_output_path, supported_targets,
+                                  architecture, toolchain_platform)
+        process = multiprocessing.Process(target=cmake_configure_and_build2,
           args= (args.source_dir, build_path,
                                   os_platform_variant_config['toolchain'],
                                   archive_output_path, supported_targets,
@@ -529,9 +541,12 @@ def main():
                                   # archive_output_path, supported_targets,
                                   # architecture, toolchain_platform)
         processes.append((process, archive_output_path))
-        process.start()
+        # process.start()
         # Arrange frameworks
         # arrange_frameworks(archive_output_path)
+
+  for process, archive_output_path in processes:
+    process.start()
 
   for process, archive_output_path in processes:
     process.join()
