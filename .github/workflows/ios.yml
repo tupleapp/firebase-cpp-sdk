@@ -3,6 +3,7 @@ name: iOS Builds
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+  push:
   workflow_dispatch:
     inputs:
       use_expanded_matrix:
