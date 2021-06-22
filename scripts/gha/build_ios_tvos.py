@@ -38,7 +38,7 @@ python3 scripts/gha/build_ios_tvos.py -p arm64 -t firebase_remote_config
 import argparse
 from collections import defaultdict
 import logging
-import multiprocessing
+import threading
 import os
 import shutil
 import subprocess
@@ -472,7 +472,7 @@ def cmake_configure_and_build2(source_path, build_path, toolchain,
                               archive_output_path, targets,
                               architecture=None, toolchain_platform=None):
   # CMake build for os-platform-architecture
-  cmd = ['cmake', '--build', build_path, '-j', str(os.cpu_count())]
+  cmd = ['cmake', '--build', build_path]
   cmd.append('--target')
   cmd.extend(targets)
   utils.run_command(cmd)
@@ -530,7 +530,7 @@ def main():
                                   os_platform_variant_config['toolchain'],
                                   archive_output_path, supported_targets,
                                   architecture, toolchain_platform)
-        process = multiprocessing.Process(target=cmake_configure_and_build2,
+        process = threading.Thread(target=cmake_configure_and_build2,
           args= (args.source_dir, build_path,
                                   os_platform_variant_config['toolchain'],
                                   archive_output_path, supported_targets,
