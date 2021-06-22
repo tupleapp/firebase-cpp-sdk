@@ -38,6 +38,7 @@ python3 scripts/gha/build_ios_tvos.py -p arm64 -t firebase_remote_config
 import argparse
 from collections import defaultdict
 import logging
+import multiprocessing
 import os
 import shutil
 import subprocess
@@ -477,6 +478,7 @@ def main():
     args.source_dir = os.path.abspath(args.source_dir)
 
   frameworks_path = os.path.join(args.build_dir, 'frameworks')
+  processes = []
   for apple_os in args.os:
     logging.info("Building for {0}".format(apple_os))
     os_config = CONFIG.get(apple_os)
@@ -515,12 +517,25 @@ def main():
         # For tvos builds, we pass a special cmake option PLATFORM to toolchain.
         toolchain_platform = os_platform_variant_config['toolchain_platform'] \
                              if apple_os == 'tvos' else None
-        cmake_configure_and_build(args.source_dir, build_path,
+
+        process = multiprocessing.Process(target=cmake_configure_and_build,
+          args= (args.source_dir, build_path,
                                   os_platform_variant_config['toolchain'],
                                   archive_output_path, supported_targets,
-                                  architecture, toolchain_platform)
+                                  architecture, toolchain_platform))
+
+        # cmake_configure_and_build(args.source_dir, build_path,
+                                  # os_platform_variant_config['toolchain'],
+                                  # archive_output_path, supported_targets,
+                                  # architecture, toolchain_platform)
+        processes.append((process, archive_output_path))
+        process.start()
         # Arrange frameworks
-        arrange_frameworks(archive_output_path)
+        # arrange_frameworks(archive_output_path)
+
+  for process, archive_output_path in processes:
+    process.join()
+    arrange_frameworks(archive_output_path)
 
   # if we built for all architectures build universal framework as well.
   build_universal_framework(frameworks_path)
