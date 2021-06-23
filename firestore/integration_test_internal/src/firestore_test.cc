@@ -1,15 +1,8 @@
 #include "firebase/firestore.h"
 
 #include <algorithm>
-
-#if !defined(__ANDROID__)
-#include <future>  // NOLINT(build/c++11)
-#endif
+#include <future>
 #include <stdexcept>
-
-#if !defined(FIRESTORE_STUB_BUILD)
-#include "app/src/semaphore.h"
-#endif
 
 #if defined(__ANDROID__)
 #include "android/firestore_integration_test_android.h"
@@ -1526,12 +1519,11 @@ TEST_F(FirestoreIntegrationTest, AuthWorks) {
   WriteDocument(doc, MapFieldValue{{"foo", FieldValue::Integer(43)}});
 }
 
-#if !defined(__ANDROID__)
 // This test is to ensure b/172986326 doesn't regress.
 // Note: this test only exists in C++.
-TEST_F(FirestoreIntegrationTest, FirestoreCanBeDeletedFromTransaction) {
-  auto* app = App::Create(this->app()->options(), "foo");
-  auto* db = Firestore::GetInstance(app);
+TEST_F(FirestoreIntegrationTest, FirestoreCanBeDeletedFromTransactionAsync) {
+  Firestore* db = TestFirestore();
+  DisownFirestore(db);
 
   auto future = db->RunTransaction(
       [](Transaction&, std::string&) { return Error::kErrorOk; });
@@ -1548,7 +1540,26 @@ TEST_F(FirestoreIntegrationTest, FirestoreCanBeDeletedFromTransaction) {
   callback_done.wait();
   deletion.wait();
 }
-#endif  // #if !defined(__ANDROID__)
+
+// This test is to ensure b/172986326 doesn't regress.
+// Note: this test only exists in C++.
+TEST_F(FirestoreIntegrationTest, FirestoreCanBeDeletedFromTransaction) {
+  Firestore* db = TestFirestore();
+  DisownFirestore(db);
+
+  auto future = db->RunTransaction(
+      [](Transaction&, std::string&) { return Error::kErrorOk; });
+
+  std::promise<void> callback_done_promise;
+  auto callback_done = callback_done_promise.get_future();
+  future.AddOnCompletion([&](const Future<void>&) mutable {
+    delete db;
+    callback_done_promise.set_value();
+  });
+
+  Await(future);
+  callback_done.wait();
+}
 
 #if defined(__ANDROID__)
 TEST_F(FirestoreAndroidIntegrationTest,
