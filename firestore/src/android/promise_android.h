@@ -183,7 +183,6 @@ class Promise {
         this->completion_->CompleteWith(Error::kErrorOk, /*error_message*/ "",
                                         &future_result);
       }
-      delete this;
     }
   };
 
@@ -200,7 +199,6 @@ class Promise {
         this->completion_->CompleteWith(Error::kErrorOk, /*error_message*/ "",
                                         nullptr);
       }
-      delete this;
     }
   };
 
