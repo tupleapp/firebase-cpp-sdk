@@ -23,6 +23,9 @@ AuthError AuthResponse::error_code() const {
   if (IsSuccessful()) {
     return kAuthErrorNone;
   }
+  if (!application_data_) {
+    return kAuthErrorFailure;
+  }
   if (!application_data_->error) {
     return kAuthErrorFailure;
   }
