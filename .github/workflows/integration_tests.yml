@@ -342,7 +342,7 @@ jobs:
           python scripts/gha/gcs_uploader.py --testapp_dir ta --key_file scripts/gha-encrypted/gcs_key_file.json
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -450,7 +450,7 @@ jobs:
           retention-days: ${{ env.artifactRetentionDays }}
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -543,7 +543,7 @@ jobs:
           retention-days: ${{ env.artifactRetentionDays }}
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -635,7 +635,7 @@ jobs:
           retention-days: ${{ env.artifactRetentionDays }}
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -672,7 +672,7 @@ jobs:
         with:
           ref: ${{needs.prepare_matrix.outputs.github_ref}}
       - name: Download Desktop integration tests artifact
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: testapps
           name: testapps-desktop-${{ matrix.os }}-${{ matrix.ssl_variant }}
@@ -695,7 +695,7 @@ jobs:
           retention-days: ${{ env.artifactRetentionDays }}
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -732,7 +732,7 @@ jobs:
         with:
           ref: ${{needs.prepare_matrix.outputs.github_ref}}
       - name: Download Android integration tests artifact
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: testapps
           name: testapps-android-${{ matrix.build_os }}
@@ -773,7 +773,7 @@ jobs:
           retention-days: ${{ env.artifactRetentionDays }}
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -809,7 +809,7 @@ jobs:
         with:
           ref: ${{needs.prepare_matrix.outputs.github_ref}}
       - name: Download iOS integration tests artifact
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: testapps
           name: testapps-ios-macos-latest
@@ -850,7 +850,7 @@ jobs:
           retention-days: ${{ env.artifactRetentionDays }}      
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -886,7 +886,7 @@ jobs:
         with:
           ref: ${{needs.prepare_matrix.outputs.github_ref}}
       - name: Download tvOS integration tests artifact
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: testapps
           name: testapps-tvos-macos-latest
@@ -911,7 +911,7 @@ jobs:
           retention-days: ${{ env.artifactRetentionDays }}      
       - name: Download log artifacts
         if: ${{ needs.check_trigger.outputs.should_update_pr && failure() && !cancelled() }}
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
@@ -949,7 +949,7 @@ jobs:
       - name: Install python deps
         run: pip install -r scripts/gha/requirements.txt
       - name: Download log artifacts
-        uses: actions/download-artifact@v2.0.8
+        uses: actions/download-artifact@v4.1.7
         with:
           path: test_results
           name: log-artifact
